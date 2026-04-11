@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Masters Pool — Entry Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a4a2e;
+    --green-mid: #2d6a44;
+    --green-light: #3d8a5a;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --cream: #fdf8ef;
+    --cream-dark: #f0e8d5;
+    --white: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #5a5a5a;
+    --border: #d4c9a8;
+    --error: #b84040;
+    --success: #2d6a44;
+    --shadow: 0 4px 24px rgba(26,74,46,0.12);
+    --shadow-lg: 0 12px 48px rgba(26,74,46,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--green);
+    min-height: 100vh;
+    color: var(--text);
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(61,138,90,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(16,40,24,0.5) 0%, transparent 60%);
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 48px 24px 36px;
+    position: relative;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 6vw, 54px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+
+  .header h1 span {
+    color: var(--gold);
+  }
+
+  .header-sub {
+    color: rgba(255,255,255,0.7);
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin: 20px auto;
+    opacity: 0.6;
+  }
+
+  /* Main container */
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 16px 60px;
+  }
+
+  /* Rules card */
+  .rules-card {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .rules-card strong {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  /* Card */
+  .card {
+    background: var(--cream);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .card-header {
+    background: var(--green);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-header-number {
+    width: 30px;
+    height: 30px;
+    background: var(--gold);
+    color: var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .card-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .card-header .card-subhead {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    margin-left: auto;
+  }
+
+  .card-body {
+    padding: 28px;
+  }
+
+  /* Form elements */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group:last-child {
+    margin-bottom: 0;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  label .required {
+    color: var(--error);
+    margin-left: 2px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(45,106,68,0.12);
+  }
+
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-wrapper::after {
+    content: '▾';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--green-mid);
+    pointer-events: none;
+    font-size: 14px;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 500px) {
+    .form-row { grid-template-columns: 1fr; }
+    .card-body { padding: 20px; }
+    .card-header { padding: 16px 20px; }
+  }
+
+  /* Team block */
+  .team-block {
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    background: var(--white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+
+  .team-block:hover {
+    border-color: var(--green-light);
+    box-shadow: 0 2px 12px rgba(26,74,46,0.08);
+  }
+
+  .team-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .team-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .team-label::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  .remove-team-btn {
+    background: none;
+    border: 1px solid #ddd;
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  .remove-team-btn:hover {
+    background: #fee;
+    border-color: var(--error);
+    color: var(--error);
+  }
+
+  .golfer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  @media (max-width: 500px) {
+    .golfer-grid { grid-template-columns: 1fr; }
+  }
+
+  .golfer-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .tiebreaker-row {
+    border-top: 1px solid var(--cream-dark);
+    padding-top: 14px;
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+  }
+
+  .tiebreaker-row .form-group {
+    margin-bottom: 0;
+    flex: 0 0 140px;
+  }
+
+  .tiebreaker-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding-bottom: 4px;
+    font-style: italic;
+    flex: 1;
+  }
+
+  /* Add team button */
+  .add-team-btn {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    color: var(--green-mid);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .add-team-btn:hover:not(:disabled) {
+    border-color: var(--green-mid);
+    background: rgba(45,106,68,0.05);
+  }
+
+  .add-team-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .team-count-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* Submit */
+  .submit-card {
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+  }
+
+  .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--green);
+    color: var(--white);
+    padding: 16px 48px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 16px rgba(26,74,46,0.3);
+  }
+
+  .submit-btn:hover {
+    background: var(--green-mid);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,74,46,0.35);
+  }
+
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+
+  .submit-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* Toast / success overlay */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,74,46,0.92);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .success-overlay.show {
+    display: flex;
+  }
+
+  .success-box {
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 48px 40px;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    animation: popIn 0.3s ease;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 32px;
+  }
+
+  .success-box h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+
+  .success-box p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .success-summary {
+    background: var(--cream-dark);
+    border-radius: 10px;
+    padding: 16px;
+    margin: 20px 0;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .success-btn {
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  /* Error states */
+  .field-error {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 5px;
+    display: none;
+  }
+
+  input.invalid, select.invalid {
+    border-color: var(--error);
+  }
+
+  .form-error-msg {
+    background: #fef0f0;
+    border: 1px solid #f5c6c6;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--error);
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  /* Payment note */
+  .payment-note {
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .payment-note-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+
+  .payment-note-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .payment-note-text strong { color: var(--green); }
+
+  /* Payout calculator */
+  .payout-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .payout-table thead tr {
+    background: var(--green);
+    color: var(--white);
+  }
+
+  .payout-table thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .payout-table thead th:last-child { text-align: right; }
+
+  .payout-table tbody tr {
+    border-bottom: 1px solid var(--cream-dark);
+    transition: background 0.15s;
+  }
+
+  .payout-table tbody tr:last-child { border-bottom: none; }
+  .payout-table tbody tr:hover { background: rgba(201,168,76,0.06); }
+
+  .payout-table td {
+    padding: 13px 16px;
+    vertical-align: middle;
+  }
+
+  .payout-table td:last-child {
+    text-align: right;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--green);
+  }
+
+  .place-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .place-medal {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .medal-1 { background: #d4af37; color: white; }
+  .medal-2 { background: #a8a9ad; color: white; }
+  .medal-3 { background: #cd7f32; color: white; }
+  .medal-4 { background: var(--cream-dark); color: var(--text-muted); font-size:11px; }
+  .medal-5 { background: var(--cream-dark); color: var(--text-muted); font-size:11px; }
+
+  .payout-pct {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  .pot-tracker {
+    background: var(--green);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .pot-tracker-label {
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .pot-tracker-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .pot-tracker-right { text-align: right; }
+
+  .pot-entry-count {
+    color: rgba(255,255,255,0.55);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .calculator-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 10px 16px;
+    font-style: italic;
+    background: var(--cream-dark);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">⛳ Augusta National · April 2027</div>
+  <h1>15th Annual <span>Masters Pool</span></h1>
+  <div class="divider"></div>
+  <p class="header-sub">Entry Form · $20 per team</p>
+</div>
+
+<div class="container">
+
+  <div class="rules-card">
+    <div style="font-family:'Playfair Display',serif; font-size:17px; color:rgba(255,255,255,0.95); margin-bottom:12px;">Hello Friends — Welcome to the 15th Annual Masters Pool. Same Pool, New Look and Feel.</div>
+    <strong>How it works:</strong> Pick any 4 golfers from the field for each team. If any golfer on your team misses the cut, your team is eliminated. Team score = sum of all 4 golfer scores. Include a tiebreaker: your prediction for the winning score (e.g. -14). Closest to the actual winning score wins any ties. <strong>Up to 5 teams per submission.</strong> $20 per team — payment instructions at the end.
+  </div>
+
+  <!-- Step 1: Your Info -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-number">1</div>
+      <h2>Your Information</h2>
+    </div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name <span class="required">*</span></label>
+          <input type="text" id="firstName" placeholder="Jeff" autocomplete="given-name">
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name <span class="required">*</span></label>
+          <input type="text" id="lastName" placeholder="DeRose" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address <span class="required">*</span></label>
+        <input type="email" id="email" placeholder="you@email.com" autocomplete="email">
+        <div class="hint">You'll receive a confirmation email with all your picks.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Teams -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-number">2</div>
+      <h2>Your Team(s)</h2>
+      <span class="card-subhead">Up to 5 teams</span>
+    </div>
+    <div class="card-body">
+      <div class="form-error-msg" id="teamsErrorMsg"></div>
+      <div id="teamsContainer"></div>
+      <button class="add-team-btn" id="addTeamBtn" type="button">
+        <span>＋</span> Add Another Team
+      </button>
+      <div class="team-count-note" id="teamCountNote"></div>
+    </div>
+  </div>
+
+  <!-- Payment -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-number">3</div>
+      <h2>Payment</h2>
+    </div>
+    <div class="card-body">
+      <div class="payment-note">
+        <div class="payment-note-icon">💵</div>
+        <div class="payment-note-text">
+          <strong>$20 per team.</strong> Send payment via <strong>Venmo</strong> or <strong>Zelle</strong> — details will be included in your confirmation email. Payment is due before the tournament begins Thursday morning.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payout Calculator -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-number">4</div>
+      <h2>Prize Payouts</h2>
+      <span class="card-subhead">Updates as entries come in</span>
+    </div>
+    <div class="pot-tracker">
+      <div>
+        <div class="pot-tracker-label">Current Prize Pool</div>
+        <div class="pot-tracker-value" id="potTotal">$0</div>
+      </div>
+      <div class="pot-tracker-right">
+        <div class="pot-tracker-value" id="entryCountDisplay">0 entries</div>
+        <div class="pot-entry-count" id="remainingPotDisplay">Remaining pot: $0</div>
+      </div>
+    </div>
+    <table class="payout-table">
+      <thead>
+        <tr>
+          <th>Place</th>
+          <th>Structure</th>
+          <th>Payout</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="place-badge"><span class="place-medal medal-1">1</span> 1st Place</div></td>
+          <td>55% of remaining pot</td>
+          <td id="pay1">—</td>
+        </tr>
+        <tr>
+          <td><div class="place-badge"><span class="place-medal medal-2">2</span> 2nd Place</div></td>
+          <td>30% of remaining pot</td>
+          <td id="pay2">—</td>
+        </tr>
+        <tr>
+          <td><div class="place-badge"><span class="place-medal medal-3">3</span> 3rd Place</div></td>
+          <td>15% of remaining pot</td>
+          <td id="pay3">—</td>
+        </tr>
+        <tr>
+          <td><div class="place-badge"><span class="place-medal medal-4">4th</span> 4th Place</div></td>
+          <td>Double entry fee</td>
+          <td id="pay4">$40</td>
+        </tr>
+        <tr>
+          <td><div class="place-badge"><span class="place-medal medal-5">5th</span> 5th Place</div></td>
+          <td>Entry fee back</td>
+          <td id="pay5">$20</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="calculator-note">
+      Remaining pot = total entries × $20, minus the fixed 4th ($40) and 5th ($20) place payouts. Percentages apply to the remaining pot.
+      Numbers shown are estimates based on current entry count — final payouts calculated after entries close.
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-card">
+    <button class="submit-btn" id="submitBtn" type="button">
+      Submit My Entry ⛳
+    </button>
+    <div class="submit-note">
+      You'll receive a confirmation email immediately after submitting.<br>
+      To make changes (e.g. a player withdrawal), reply to that email.
+    </div>
+  </div>
+
+</div>
+
+<!-- Success overlay -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon">✓</div>
+    <h2>You're in!</h2>
+    <p>Your entry has been received. A confirmation has been sent to <strong id="confirmEmail"></strong>.</p>
+    <div class="success-summary" id="successSummary"></div>
+    <p style="font-size:13px;color:#888;">Need to make a change? Just reply to the confirmation email.</p>
+    <button class="success-btn" onclick="location.reload()">Submit Another Entry</button>
+  </div>
+</div>
+
+<script>
+const GOLFERS = [
+  "Ludvig Åberg", "Akshay Bhatia", "Daniel Berger", "Keegan Bradley",
+  "Jacob Bridgeman", "Michael Brennan", "Sam Burns", "Brian Campbell",
+  "Patrick Cantlay", "Angel Cabrera", "Wyndham Clark", "Corey Conners",
+  "Fred Couples", "Jason Day", "Bryson DeChambeau", "Nicolas Echavarria",
+  "Harris English", "Ethan Fang (a)", "Matt Fitzpatrick", "Tommy Fleetwood",
+  "Ryan Fox", "Sergio Garcia", "Ryan Gerard", "Chris Gotterup",
+  "Max Greyserman", "Ben Griffin", "Harry Hall", "Brian Harman",
+  "Tyrrell Hatton", "Russell Henley", "Max Homa", "Brandon Holtz (a)",
+  "Mason Howell (a)", "Jackson Herrington (a)", "Viktor Hovland",
+  "Rasmus Højgaard", "Nicolai Højgaard", "Sungjae Im", "Dustin Johnson",
+  "Zach Johnson", "Casey Jarvis", "Naoyuki Kataoka", "John Keefer",
+  "Michael Kim", "Si Woo Kim", "Kurt Kitayama", "Jake Knapp",
+  "Brooks Koepka", "Haotong Li", "Fifa Laopakdee (a)", "Min Woo Lee",
+  "Shane Lowry", "Robert MacIntyre", "Hideki Matsuyama", "Matt McCarty",
+  "Rory McIlroy", "Tom McKibbin", "Maverick McNealy", "Collin Morikawa",
+  "Rasmus Neergaard-Petersen", "Alex Noren", "Andrew Novak",
+  "Jose Maria Olazabal", "Carlos Ortiz", "Marco Penge", "Aldrich Potgieter",
+  "Mateo Pulcini (a)", "Aaron Rai", "Jon Rahm", "Patrick Reed",
+  "Kristoffer Reitan", "Davis Riley", "Justin Rose", "Xander Schauffele",
+  "Scottie Scheffler", "Adam Scott", "Charl Schwartzel", "Vijay Singh",
+  "Cameron Smith", "J.J. Spaun", "Jordan Spieth", "Samuel Stevens",
+  "Sepp Straka", "Nick Taylor", "Justin Thomas", "Sami Valimaki",
+  "Bubba Watson", "Mike Weir", "Danny Willett", "Gary Woodland",
+  "Cameron Young"
+].sort();
+
+const MAX_TEAMS = 5;
+let teamCount = 0;
+
+function buildGolferOptions(selectedVal = "") {
+  let opts = `<option value="">— Select a golfer —</option>`;
+  GOLFERS.forEach(g => {
+    opts += `<option value="${g}"${g === selectedVal ? ' selected' : ''}>${g}</option>`;
+  });
+  return opts;
+}
+
+function addTeam() {
+  if (teamCount >= MAX_TEAMS) return;
+  teamCount++;
+  const idx = teamCount;
+
+  const block = document.createElement('div');
+  block.className = 'team-block';
+  block.id = `team-${idx}`;
+  block.innerHTML = `
+    <div class="team-block-header">
+      <div class="team-label">Team ${idx}</div>
+      ${idx > 1 ? `<button class="remove-team-btn" type="button" onclick="removeTeam(${idx})">Remove</button>` : ''}
+    </div>
+    <div class="golfer-grid">
+      ${[1,2,3,4].map(n => `
+        <div>
+          <div class="golfer-label">Golfer ${n}</div>
+          <div class="select-wrapper">
+            <select id="team${idx}_golfer${n}" data-team="${idx}" data-golfer="${n}">
+              ${buildGolferOptions()}
+            </select>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="tiebreaker-row">
+      <div class="form-group">
+        <label for="team${idx}_tb">Tiebreaker Score</label>
+        <input type="number" id="team${idx}_tb" placeholder="-14" min="-30" max="30">
+      </div>
+      <div class="tiebreaker-hint">Your predicted winning score (e.g. -14, -12). This golfer does NOT have to be in your foursome.</div>
+    </div>
+  `;
+
+  document.getElementById('teamsContainer').appendChild(block);
+  updateAddBtn();
+}
+
+function removeTeam(idx) {
+  const block = document.getElementById(`team-${idx}`);
+  if (block) block.remove();
+  teamCount--;
+  // Re-number remaining teams
+  const blocks = document.querySelectorAll('.team-block');
+  teamCount = 0;
+  blocks.forEach(b => {
+    teamCount++;
+    b.id = `team-${teamCount}`;
+    b.querySelector('.team-label').innerHTML = `<span style="display:inline-block;width:10px;height:10px;background:var(--gold);border-radius:50%;"></span> Team ${teamCount}`;
+    // Update all IDs inside
+    b.querySelectorAll('[id]').forEach(el => {
+      el.id = el.id.replace(/team\d+_/, `team${teamCount}_`);
+    });
+    b.querySelectorAll('[for]').forEach(el => {
+      el.setAttribute('for', el.getAttribute('for').replace(/team\d+_/, `team${teamCount}_`));
+    });
+    // Fix remove button
+    const removeBtn = b.querySelector('.remove-team-btn');
+    if (removeBtn) {
+      if (teamCount === 1) removeBtn.remove();
+      else removeBtn.setAttribute('onclick', `removeTeam(${teamCount})`);
+    }
+  });
+  updateAddBtn();
+}
+
+function updateAddBtn() {
+  const btn = document.getElementById('addTeamBtn');
+  const note = document.getElementById('teamCountNote');
+  if (teamCount >= MAX_TEAMS) {
+    btn.disabled = true;
+    note.textContent = `Maximum of ${MAX_TEAMS} teams per submission reached.`;
+  } else {
+    btn.disabled = false;
+    note.textContent = teamCount > 0 ? `${MAX_TEAMS - teamCount} team slot${MAX_TEAMS - teamCount !== 1 ? 's' : ''} remaining` : '';
+  }
+}
+
+function validateForm() {
+  let valid = true;
+  const errors = [];
+
+  // Clear prior errors
+  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const email = document.getElementById('email').value.trim();
+
+  if (!firstName) { document.getElementById('firstName').classList.add('invalid'); valid = false; }
+  if (!lastName) { document.getElementById('lastName').classList.add('invalid'); valid = false; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('email').classList.add('invalid'); valid = false;
+    errors.push('Please enter a valid email address.');
+  }
+
+  if (teamCount === 0) {
+    errors.push('Please add at least one team.');
+    valid = false;
+  }
+
+  const blocks = document.querySelectorAll('.team-block');
+  blocks.forEach((b, i) => {
+    const tNum = i + 1;
+    const selects = b.querySelectorAll('select');
+    const chosen = [];
+    let teamHasError = false;
+
+    selects.forEach(s => {
+      if (!s.value) { s.classList.add('invalid'); valid = false; teamHasError = true; }
+      else if (chosen.includes(s.value)) {
+        s.classList.add('invalid'); valid = false;
+        errors.push(`Team ${tNum}: Each golfer can only be selected once per team.`);
+        teamHasError = true;
+      } else {
+        chosen.push(s.value);
+      }
+    });
+
+    if (teamHasError && !errors.some(e => e.includes(`Team ${tNum}`))) {
+      errors.push(`Team ${tNum}: Please select all 4 golfers.`);
+    }
+
+    const tbInput = b.querySelector('input[type="number"]');
+    if (!tbInput.value) {
+      tbInput.classList.add('invalid'); valid = false;
+      if (!errors.some(e => e.includes(`Team ${tNum}`))) {
+        errors.push(`Team ${tNum}: Please enter a tiebreaker score.`);
+      }
+    }
+  });
+
+  const errMsg = document.getElementById('teamsErrorMsg');
+  if (errors.length) {
+    errMsg.style.display = 'block';
+    errMsg.innerHTML = errors.join('<br>');
+  } else {
+    errMsg.style.display = 'none';
+  }
+
+  return valid;
+}
+
+function getFormData() {
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const email = document.getElementById('email').value.trim();
+
+  const teams = [];
+  const blocks = document.querySelectorAll('.team-block');
+  blocks.forEach((b, i) => {
+    const tNum = i + 1;
+    const selects = b.querySelectorAll('select');
+    const golfers = Array.from(selects).map(s => s.value);
+    const tb = b.querySelector('input[type="number"]').value;
+    teams.push({ teamNum: tNum, golfers, tiebreaker: tb });
+  });
+
+  return { firstName, lastName, email, teams };
+}
+
+function showSuccess(data) {
+  document.getElementById('confirmEmail').textContent = data.email;
+
+  let summary = `<strong>Name:</strong> ${data.firstName} ${data.lastName}<br>`;
+  summary += `<strong>Teams:</strong> ${data.teams.length} (Total: $${data.teams.length * 20})<br><br>`;
+  data.teams.forEach(t => {
+    summary += `<strong>Team ${t.teamNum}:</strong> ${t.golfers.join(', ')} — TB: ${t.tiebreaker}<br>`;
+  });
+
+  document.getElementById('successSummary').innerHTML = summary;
+  document.getElementById('successOverlay').classList.add('show');
+}
+
+// Wire up submit
+document.getElementById('submitBtn').addEventListener('click', function() {
+  if (!validateForm()) return;
+
+  const data = getFormData();
+
+  // Compose the email body for mailto fallback (also works as webhook payload)
+  let body = `Masters Pool Entry\n`;
+  body += `Name: ${data.firstName} ${data.lastName}\n`;
+  body += `Email: ${data.email}\n\n`;
+  data.teams.forEach(t => {
+    body += `Team ${t.teamNum}:\n`;
+    t.golfers.forEach((g, i) => body += `  Golfer ${i+1}: ${g}\n`);
+    body += `  Tiebreaker: ${t.tiebreaker}\n\n`;
+  });
+  body += `Total Teams: ${data.teams.length}\nTotal Due: $${data.teams.length * 20}`;
+
+  // --- GOOGLE APPS SCRIPT WEBHOOK ---
+  // When you set up the Apps Script web app, replace the URL below:
+  const WEBHOOK_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEBHOOK_URL_HERE';
+
+  if (WEBHOOK_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEBHOOK_URL_HERE') {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(() => {
+      showSuccess(data);
+    }).catch(() => {
+      // Fallback to mailto if webhook fails
+      window.location.href = `mailto:YOUR_EMAIL_HERE?subject=Masters Pool Entry - ${data.firstName} ${data.lastName}&body=${encodeURIComponent(body)}`;
+      showSuccess(data);
+    });
+  } else {
+    // No webhook configured yet — use mailto fallback
+    window.location.href = `mailto:YOUR_EMAIL_HERE?subject=Masters Pool Entry - ${data.firstName} ${data.lastName}&body=${encodeURIComponent(body)}`;
+    showSuccess(data);
+  }
+});
+
+document.getElementById('addTeamBtn').addEventListener('click', addTeam);
+
+// Payout calculator
+// For now uses the current submission's team count as a live preview.
+// Once wired to Supabase, this will pull the real total entry count.
+function updatePayoutCalculator() {
+  const ENTRY_FEE = 20;
+  const FIXED_4TH = 40;
+  const FIXED_5TH = 20;
+
+  // Use live entry count from DB when available; for now use current form teams
+  const liveEntries = typeof TOTAL_ENTRIES !== 'undefined' ? TOTAL_ENTRIES : teamCount;
+  const totalPot = liveEntries * ENTRY_FEE;
+  const remainingPot = Math.max(0, totalPot - FIXED_4TH - FIXED_5TH);
+
+  const fmt = (n) => n > 0 ? '$' + n.toLocaleString('en-US', {minimumFractionDigits: 0}) : '—';
+
+  document.getElementById('potTotal').textContent = fmt(totalPot);
+  document.getElementById('entryCountDisplay').textContent = liveEntries === 1 ? '1 entry' : `${liveEntries} entries`;
+  document.getElementById('remainingPotDisplay').textContent = `Remaining pot: ${fmt(remainingPot)}`;
+
+  document.getElementById('pay1').textContent = totalPot > 60 ? fmt(Math.round(remainingPot * 0.55)) : '—';
+  document.getElementById('pay2').textContent = totalPot > 60 ? fmt(Math.round(remainingPot * 0.30)) : '—';
+  document.getElementById('pay3').textContent = totalPot > 60 ? fmt(Math.round(remainingPot * 0.15)) : '—';
+  document.getElementById('pay4').textContent = '$40';
+  document.getElementById('pay5').textContent = '$20';
+}
+
+// Re-run calculator whenever teams are added or removed
+const _origAdd = addTeam;
+const _origRemove = removeTeam;
+// Hook into add button and rebuild
+document.getElementById('addTeamBtn').removeEventListener('click', addTeam);
+document.getElementById('addTeamBtn').addEventListener('click', function() {
+  addTeam();
+  updatePayoutCalculator();
+});
+
+// Patch removeTeam to also update calculator
+const _patchedRemove = window.removeTeam;
+window.removeTeam = function(idx) {
+  _patchedRemove(idx);
+  updatePayoutCalculator();
+};
+
+// Start with one team
+addTeam();
+updatePayoutCalculator();
+</script>
+</body>
+</html>
