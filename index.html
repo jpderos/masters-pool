@@ -1037,70 +1037,107 @@ function showSuccess(data) {
   document.getElementById('successOverlay').classList.add('show');
 }
 
-// Wire up submit
-document.getElementById('submitBtn').addEventListener('click', function() {
+// --- SUPABASE CONFIG ---
+const SUPABASE_URL = 'https://pxkulaarrlytzavaeqej.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_CujL2hPGtKiLkVfj9TZDJQ_mSFeucdx';
+
+async function supabaseRequest(endpoint, method, body) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Prefer': method === 'POST' ? 'return=representation' : ''
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+  return method === 'DELETE' ? null : res.json();
+}
+
+// Submit handler
+document.getElementById('submitBtn').addEventListener('click', async function() {
   if (!validateForm()) return;
 
   const data = getFormData();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
 
-  // Compose the email body for mailto fallback (also works as webhook payload)
-  let body = `Masters Pool Entry\n`;
-  body += `Name: ${data.firstName} ${data.lastName}\n`;
-  body += `Email: ${data.email}\n\n`;
-  data.teams.forEach(t => {
-    body += `Team ${t.teamNum}:\n`;
-    t.golfers.forEach((g, i) => body += `  Golfer ${i+1}: ${g}\n`);
-    body += `  Tiebreaker: ${t.tiebreaker}\n\n`;
-  });
-  body += `Total Teams: ${data.teams.length}\nTotal Due: $${data.teams.length * 20}`;
-
-  // --- GOOGLE APPS SCRIPT WEBHOOK ---
-  // When you set up the Apps Script web app, replace the URL below:
-  const WEBHOOK_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEBHOOK_URL_HERE';
-
-  if (WEBHOOK_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEBHOOK_URL_HERE') {
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Submitting...';
-
-    fetch(WEBHOOK_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    }).then(() => {
-      showSuccess(data);
-    }).catch(() => {
-      // Fallback to mailto if webhook fails
-      window.location.href = `mailto:YOUR_EMAIL_HERE?subject=Masters Pool Entry - ${data.firstName} ${data.lastName}&body=${encodeURIComponent(body)}`;
-      showSuccess(data);
+  try {
+    // 1. Insert submission
+    const [submission] = await supabaseRequest('submissions', 'POST', {
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email,
+      total_teams: data.teams.length
     });
-  } else {
-    // No webhook configured yet — use mailto fallback
-    window.location.href = `mailto:YOUR_EMAIL_HERE?subject=Masters Pool Entry - ${data.firstName} ${data.lastName}&body=${encodeURIComponent(body)}`;
+
+    // 2. Insert each team
+    for (const t of data.teams) {
+      await supabaseRequest('teams', 'POST', {
+        submission_id: submission.id,
+        team_number: t.teamNum,
+        golfer_1: t.golfers[0],
+        golfer_2: t.golfers[1],
+        golfer_3: t.golfers[2],
+        golfer_4: t.golfers[3],
+        tiebreaker: parseInt(t.tiebreaker)
+      });
+    }
+
+    // 3. Show success and refresh calculator
+    await fetchLiveEntryCount();
     showSuccess(data);
+
+  } catch (err) {
+    console.error('Submission error:', err);
+    btn.disabled = false;
+    btn.textContent = 'Submit My Entry ⛳';
+    document.getElementById('teamsErrorMsg').style.display = 'block';
+    document.getElementById('teamsErrorMsg').textContent = 'Something went wrong submitting your entry. Please try again.';
   }
 });
 
-document.getElementById('addTeamBtn').addEventListener('click', addTeam);
+// Payout calculator — pulls live entry count from Supabase
+let liveEntryCount = 0;
 
-// Payout calculator
-// For now uses the current submission's team count as a live preview.
-// Once wired to Supabase, this will pull the real total entry count.
+async function fetchLiveEntryCount() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/teams?select=id`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'count=exact',
+        'Range': '0-0'
+      }
+    });
+    const range = res.headers.get('content-range');
+    if (range) {
+      const total = parseInt(range.split('/')[1]);
+      liveEntryCount = isNaN(total) ? 0 : total;
+    }
+  } catch(e) {
+    liveEntryCount = 0;
+  }
+  updatePayoutCalculator();
+}
+
 function updatePayoutCalculator() {
   const ENTRY_FEE = 20;
   const FIXED_4TH = 40;
   const FIXED_5TH = 20;
 
-  // Use live entry count from DB when available; for now use current form teams
-  const liveEntries = typeof TOTAL_ENTRIES !== 'undefined' ? TOTAL_ENTRIES : teamCount;
-  const totalPot = liveEntries * ENTRY_FEE;
+  const totalPot = liveEntryCount * ENTRY_FEE;
   const remainingPot = Math.max(0, totalPot - FIXED_4TH - FIXED_5TH);
-
-  const fmt = (n) => n > 0 ? '$' + n.toLocaleString('en-US', {minimumFractionDigits: 0}) : '—';
+  const fmt = (n) => n > 0 ? '$' + n.toLocaleString('en-US') : '—';
 
   document.getElementById('potTotal').textContent = fmt(totalPot);
-  document.getElementById('entryCountDisplay').textContent = liveEntries === 1 ? '1 entry' : `${liveEntries} entries`;
+  document.getElementById('entryCountDisplay').textContent = liveEntryCount === 1 ? '1 entry' : `${liveEntryCount} entries`;
   document.getElementById('remainingPotDisplay').textContent = `Remaining pot: ${fmt(remainingPot)}`;
 
   document.getElementById('pay1').textContent = totalPot > 60 ? fmt(Math.round(remainingPot * 0.55)) : '—';
@@ -1110,26 +1147,36 @@ function updatePayoutCalculator() {
   document.getElementById('pay5').textContent = '$20';
 }
 
-// Re-run calculator whenever teams are added or removed
-const _origAdd = addTeam;
-const _origRemove = removeTeam;
-// Hook into add button and rebuild
-document.getElementById('addTeamBtn').removeEventListener('click', addTeam);
-document.getElementById('addTeamBtn').addEventListener('click', function() {
-  addTeam();
-  updatePayoutCalculator();
-});
+document.getElementById('addTeamBtn').addEventListener('click', addTeam);
 
-// Patch removeTeam to also update calculator
-const _patchedRemove = window.removeTeam;
 window.removeTeam = function(idx) {
-  _patchedRemove(idx);
-  updatePayoutCalculator();
+  const block = document.getElementById(`team-${idx}`);
+  if (block) block.remove();
+  teamCount--;
+  const blocks = document.querySelectorAll('.team-block');
+  teamCount = 0;
+  blocks.forEach(b => {
+    teamCount++;
+    b.id = `team-${teamCount}`;
+    b.querySelector('.team-label').innerHTML = `<span style="display:inline-block;width:10px;height:10px;background:var(--gold);border-radius:50%;"></span> Team ${teamCount}`;
+    b.querySelectorAll('[id]').forEach(el => {
+      el.id = el.id.replace(/team\d+_/, `team${teamCount}_`);
+    });
+    b.querySelectorAll('[for]').forEach(el => {
+      el.setAttribute('for', el.getAttribute('for').replace(/team\d+_/, `team${teamCount}_`));
+    });
+    const removeBtn = b.querySelector('.remove-team-btn');
+    if (removeBtn) {
+      if (teamCount === 1) removeBtn.remove();
+      else removeBtn.setAttribute('onclick', `removeTeam(${teamCount})`);
+    }
+  });
+  updateAddBtn();
 };
 
-// Start with one team
+// Start up
 addTeam();
-updatePayoutCalculator();
+fetchLiveEntryCount();
 </script>
 </body>
 </html>
