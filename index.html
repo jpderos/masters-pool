@@ -1090,7 +1090,21 @@ document.getElementById('submitBtn').addEventListener('click', async function() 
       });
     }
 
-    // 3. Show success and refresh calculator
+    // 3. Send confirmation email
+    try {
+      await fetch('https://pxkulaarrlytzavaeqej.supabase.co/functions/v1/send-confirmation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_KEY
+        },
+        body: JSON.stringify(data)
+      });
+    } catch(emailErr) {
+      console.error('Email send failed:', emailErr);
+    }
+
+    // 4. Show success and refresh calculator
     await fetchLiveEntryCount();
     showSuccess(data);
 
