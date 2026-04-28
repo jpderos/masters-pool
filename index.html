@@ -891,7 +891,7 @@ function addTeam() {
     <div class="tiebreaker-row">
       <div class="form-group">
         <label for="team${idx}_tb">Tiebreaker Score</label>
-        <input type="number" id="team${idx}_tb" placeholder="-14" min="-30" max="30">
+        <input type="text" id="team${idx}_tb" placeholder="-14" inputmode="numeric" pattern="-?[0-9]+">
       </div>
       <div class="tiebreaker-hint">Your predicted winning score (e.g. -14, -12). This golfer does NOT have to be in your foursome.</div>
     </div>
@@ -987,7 +987,8 @@ function validateForm() {
     }
 
     const tbInput = b.querySelector('input[type="number"]');
-    if (!tbInput.value) {
+    const tbVal = tbInput.value.trim();
+    if (!tbVal || !/^-?[0-9]+$/.test(tbVal)) {
       tbInput.classList.add('invalid'); valid = false;
       if (!errors.some(e => e.includes(`Team ${tNum}`))) {
         errors.push(`Team ${tNum}: Please enter a tiebreaker score.`);
