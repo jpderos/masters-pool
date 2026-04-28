@@ -603,7 +603,10 @@
       <h1>⛳ Masters Pool Admin</h1>
       <span class="admin-badge">Dashboard</span>
     </div>
-    <button class="logout-btn" id="logoutBtn">Log Out</button>
+    <div style="display:flex;gap:10px;">
+      <button class="logout-btn" id="refreshBtn">↻ Refresh</button>
+      <button class="logout-btn" id="logoutBtn">Log Out</button>
+    </div>
   </div>
 
   <!-- Stats Bar -->
@@ -762,16 +765,27 @@ document.getElementById('passwordInput').addEventListener('keydown', e => { if (
 function login() {
   const pw = document.getElementById('passwordInput').value;
   if (pw === ADMIN_PASSWORD) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminScreen').style.display = 'block';
-    loadEntries();
+    sessionStorage.setItem('mpAdmin', '1');
+    showAdmin();
   } else {
     document.getElementById('loginError').style.display = 'block';
     document.getElementById('passwordInput').value = '';
   }
 }
 
+function showAdmin() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminScreen').style.display = 'block';
+  loadEntries();
+}
+
+// Auto-login if session active
+if (sessionStorage.getItem('mpAdmin') === '1') showAdmin();
+
+document.getElementById('refreshBtn').addEventListener('click', loadEntries);
+
 document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('mpAdmin');
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('adminScreen').style.display = 'none';
   document.getElementById('passwordInput').value = '';
@@ -1053,7 +1067,26 @@ document.getElementById('modalSaveBtn').addEventListener('click', async () => {
           tiebreaker: parseInt(t.tiebreaker)
         });
       }
-      showToast('Entry added!');
+      // Send confirmation email for manually added entries
+      if (email) {
+        try {
+          await fetch('https://pxkulaarrlytzavaeqej.supabase.co/functions/v1/send-confirmation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+            body: JSON.stringify({
+              firstName,
+              lastName,
+              email,
+              teams: teamData.map((t, i) => ({
+                teamNum: i + 1,
+                golfers: [t.golfer_1, t.golfer_2, t.golfer_3, t.golfer_4],
+                tiebreaker: t.tiebreaker
+              }))
+            })
+          });
+        } catch(e) { console.error('Email error:', e); }
+      }
+      showToast('Entry added — confirmation email sent!');
     }
 
     closeModal();
