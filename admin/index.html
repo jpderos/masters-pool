@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masters Pool — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a4a2e;
+    --green-mid: #2d6a44;
+    --green-light: #3d8a5a;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --cream: #fdf8ef;
+    --cream-dark: #f0e8d5;
+    --white: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #5a5a5a;
+    --border: #d4c9a8;
+    --error: #b84040;
+    --success: #2d6a44;
+    --warning: #c97a1a;
+    --shadow: 0 4px 24px rgba(26,74,46,0.12);
+    --shadow-lg: 0 12px 48px rgba(26,74,46,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: #f5f0e8;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Login Screen */
+  .login-screen {
+    min-height: 100vh;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-image: radial-gradient(ellipse at 20% 0%, rgba(61,138,90,0.3) 0%, transparent 60%);
+  }
+
+  .login-box {
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 48px 40px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+  }
+
+  .login-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  .login-box h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .login-box p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  .login-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    background: var(--white);
+  }
+
+  .login-input:focus {
+    outline: none;
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(45,106,68,0.12);
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .login-btn:hover { background: var(--green-mid); }
+
+  .login-error {
+    color: var(--error);
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* Admin Layout */
+  .admin-screen { display: none; }
+
+  .admin-header {
+    background: var(--green);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+
+  .admin-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .admin-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--white);
+  }
+
+  .admin-badge {
+    background: var(--gold);
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .logout-btn {
+    background: rgba(255,255,255,0.15);
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .logout-btn:hover { background: rgba(255,255,255,0.25); }
+
+  /* Stats Bar */
+  .stats-bar {
+    background: var(--white);
+    padding: 20px 32px;
+    display: flex;
+    gap: 32px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--green);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .stat-divider {
+    width: 1px;
+    background: var(--border);
+    align-self: stretch;
+  }
+
+  /* Toolbar */
+  .toolbar {
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    background: var(--white);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--green-mid);
+  }
+
+  .filter-select {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    background: var(--white);
+    cursor: pointer;
+  }
+
+  .btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: var(--white);
+  }
+
+  .btn-primary:hover { background: var(--green-mid); }
+
+  .btn-danger {
+    background: #fef0f0;
+    color: var(--error);
+    border: 1px solid #f5c6c6;
+  }
+
+  .btn-danger:hover { background: #fde0e0; }
+
+  .btn-gold {
+    background: var(--gold);
+    color: var(--green);
+  }
+
+  .btn-gold:hover { background: var(--gold-light); }
+
+  /* Table */
+  .table-container {
+    padding: 24px 32px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 13px;
+  }
+
+  thead tr {
+    background: var(--green);
+    color: var(--white);
+  }
+
+  thead th {
+    padding: 12px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--cream-dark);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(201,168,76,0.05); }
+
+  td {
+    padding: 12px 14px;
+    vertical-align: middle;
+  }
+
+  .td-name {
+    font-weight: 600;
+    color: var(--green);
+  }
+
+  .td-email {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .td-golfers {
+    font-size: 12px;
+    color: var(--text);
+    max-width: 200px;
+  }
+
+  .td-tb {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--green-mid);
+  }
+
+  /* Payment badge */
+  .payment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .badge-unpaid {
+    background: #fef0f0;
+    color: var(--error);
+    border: 1px solid #f5c6c6;
+  }
+
+  .badge-venmo {
+    background: #e8f0fe;
+    color: #1a56b0;
+    border: 1px solid #c3d4fb;
+  }
+
+  .badge-zelle {
+    background: #f0e8ff;
+    color: #6b3db0;
+    border: 1px solid #d4c3fb;
+  }
+
+  .badge-cash {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c3e6c4;
+  }
+
+  .action-btns {
+    display: flex;
+    gap: 6px;
+  }
+
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 11px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+
+  .btn-edit {
+    background: var(--cream-dark);
+    color: var(--text);
+  }
+
+  .btn-edit:hover { background: var(--border); }
+
+  .btn-delete {
+    background: #fef0f0;
+    color: var(--error);
+  }
+
+  .btn-delete:hover { background: #fde0e0; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  .modal {
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--green);
+    margin-bottom: 24px;
+  }
+
+  .modal-form-group {
+    margin-bottom: 16px;
+  }
+
+  .modal-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+
+  .modal-input, .modal-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    background: var(--white);
+  }
+
+  .modal-input:focus, .modal-select:focus {
+    outline: none;
+    border-color: var(--green-mid);
+  }
+
+  .modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-cancel {
+    background: var(--cream-dark);
+    color: var(--text);
+    border: none;
+  }
+
+  .btn-cancel:hover { background: var(--border); }
+
+  /* Confirm dialog */
+  .confirm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .confirm-overlay.show { display: flex; }
+
+  .confirm-box {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .confirm-icon { font-size: 40px; margin-bottom: 16px; }
+
+  .confirm-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .confirm-box p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .confirm-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state h3 { font-family: 'Playfair Display', serif; color: var(--text); margin-bottom: 8px; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--green);
+    color: var(--white);
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    z-index: 3000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .team-separator {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 8px 0;
+  }
+
+  @media (max-width: 768px) {
+    .stats-bar { gap: 16px; }
+    .toolbar { padding: 12px 16px; }
+    .table-container { padding: 16px; }
+    .admin-header { padding: 12px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-badge">🔒 Admin Access</div>
+    <h1>Masters Pool</h1>
+    <p>Enter your admin password to continue</p>
+    <input type="password" class="login-input" id="passwordInput" placeholder="••••••••••••" autocomplete="off">
+    <button class="login-btn" id="loginBtn">Enter Dashboard</button>
+    <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- Admin Screen -->
+<div class="admin-screen" id="adminScreen">
+
+  <!-- Header -->
+  <div class="admin-header">
+    <div class="admin-header-left">
+      <h1>⛳ Masters Pool Admin</h1>
+      <span class="admin-badge">Dashboard</span>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="logout-btn" id="refreshBtn">↻ Refresh</button>
+      <button class="logout-btn" id="logoutBtn">Log Out</button>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value" id="statTotalEntries">0</div>
+      <div class="stat-label">Total Entries</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value" id="statTotalPot">$0</div>
+      <div class="stat-label">Total Pot</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value" id="statPaid">0</div>
+      <div class="stat-label">Paid</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value" id="statUnpaid">0</div>
+      <div class="stat-label">Unpaid</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value" id="statOutstanding">$0</div>
+      <div class="stat-label">Outstanding</div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search by name or email...">
+    <select class="filter-select" id="paymentFilter">
+      <option value="all">All Payments</option>
+      <option value="unpaid">Unpaid</option>
+      <option value="venmo">Venmo</option>
+      <option value="zelle">Zelle</option>
+      <option value="cash">Cash</option>
+    </select>
+    <button class="btn btn-primary" id="addEntryBtn">+ Add Entry</button>
+    <button class="btn btn-danger" id="clearAllBtn">🗑 Clear All</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container">
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <div class="empty-state-icon">⛳</div>
+      <h3>No entries yet</h3>
+      <p>Entries will appear here as they come in.</p>
+    </div>
+    <table id="entriesTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Team</th>
+          <th>Golfers</th>
+          <th>Tiebreaker</th>
+          <th>Payment</th>
+          <th>Submitted</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="entriesBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="entryModal">
+  <div class="modal">
+    <h2 id="modalTitle">Add Entry</h2>
+    <div class="modal-form-group">
+      <label class="modal-label">First Name</label>
+      <input type="text" class="modal-input" id="mFirstName" placeholder="John">
+    </div>
+    <div class="modal-form-group">
+      <label class="modal-label">Last Name</label>
+      <input type="text" class="modal-input" id="mLastName" placeholder="Smith">
+    </div>
+    <div class="modal-form-group">
+      <label class="modal-label">Email</label>
+      <input type="email" class="modal-input" id="mEmail" placeholder="john@email.com">
+    </div>
+    <div id="teamsSection"></div>
+    <div class="modal-form-group">
+      <label class="modal-label">Payment Status</label>
+      <select class="modal-select" id="mPayment">
+        <option value="unpaid">Unpaid</option>
+        <option value="venmo">Venmo</option>
+        <option value="zelle">Zelle</option>
+        <option value="cash">Cash</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" id="modalCancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="modalSaveBtn">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon" id="confirmIcon">⚠️</div>
+    <h3 id="confirmTitle">Are you sure?</h3>
+    <p id="confirmMsg">This action cannot be undone.</p>
+    <div class="confirm-btns">
+      <button class="btn btn-cancel" id="confirmCancelBtn">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const ADMIN_PASSWORD = 'A14O24G17D15$';
+const SUPABASE_URL = 'https://pxkulaarrlytzavaeqej.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_CujL2hPGtKiLkVfj9TZDJQ_mSFeucdx';
+
+const GOLFERS = [
+  "Ludvig Åberg","Akshay Bhatia","Daniel Berger","Keegan Bradley","Jacob Bridgeman",
+  "Michael Brennan","Sam Burns","Brian Campbell","Patrick Cantlay","Angel Cabrera",
+  "Wyndham Clark","Corey Conners","Fred Couples","Jason Day","Bryson DeChambeau",
+  "Nicolas Echavarria","Harris English","Ethan Fang (a)","Matt Fitzpatrick","Tommy Fleetwood",
+  "Ryan Fox","Sergio Garcia","Ryan Gerard","Chris Gotterup","Max Greyserman","Ben Griffin",
+  "Harry Hall","Brian Harman","Tyrrell Hatton","Russell Henley","Max Homa","Brandon Holtz (a)",
+  "Mason Howell (a)","Jackson Herrington (a)","Viktor Hovland","Rasmus Højgaard","Nicolai Højgaard",
+  "Sungjae Im","Dustin Johnson","Zach Johnson","Casey Jarvis","Naoyuki Kataoka","John Keefer",
+  "Michael Kim","Si Woo Kim","Kurt Kitayama","Jake Knapp","Brooks Koepka","Haotong Li",
+  "Fifa Laopakdee (a)","Min Woo Lee","Shane Lowry","Robert MacIntyre","Hideki Matsuyama",
+  "Matt McCarty","Rory McIlroy","Tom McKibbin","Maverick McNealy","Collin Morikawa",
+  "Rasmus Neergaard-Petersen","Alex Noren","Andrew Novak","Jose Maria Olazabal","Carlos Ortiz",
+  "Marco Penge","Aldrich Potgieter","Mateo Pulcini (a)","Aaron Rai","Jon Rahm","Patrick Reed",
+  "Kristoffer Reitan","Davis Riley","Justin Rose","Xander Schauffele","Scottie Scheffler",
+  "Adam Scott","Charl Schwartzel","Vijay Singh","Cameron Smith","J.J. Spaun","Jordan Spieth",
+  "Samuel Stevens","Sepp Straka","Nick Taylor","Justin Thomas","Sami Valimaki","Bubba Watson",
+  "Mike Weir","Danny Willett","Gary Woodland","Cameron Young"
+].sort();
+
+// State
+let allEntries = [];
+let editingTeamId = null;
+let editingSubmissionId = null;
+let confirmCallback = null;
+
+// Auth
+document.getElementById('loginBtn').addEventListener('click', login);
+document.getElementById('passwordInput').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+function login() {
+  const pw = document.getElementById('passwordInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    sessionStorage.setItem('mpAdmin', '1');
+    showAdmin();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('passwordInput').value = '';
+  }
+}
+
+function showAdmin() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminScreen').style.display = 'block';
+  loadEntries();
+}
+
+// Auto-login if session active
+if (sessionStorage.getItem('mpAdmin') === '1') showAdmin();
+
+document.getElementById('refreshBtn').addEventListener('click', loadEntries);
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('mpAdmin');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('adminScreen').style.display = 'none';
+  document.getElementById('passwordInput').value = '';
+});
+
+// Supabase
+async function supabaseReq(endpoint, method = 'GET', body = null, extra = '') {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}${extra}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Prefer': method === 'POST' ? 'return=representation' : method === 'PATCH' ? 'return=representation' : ''
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (method === 'DELETE') return null;
+  return res.json();
+}
+
+async function loadEntries() {
+  try {
+    const submissions = await supabaseReq('submissions', 'GET', null, '?select=*&order=created_at.asc');
+    const teams = await supabaseReq('teams', 'GET', null, '?select=*&order=team_number.asc');
+
+    allEntries = submissions.map(s => ({
+      ...s,
+      teams: teams.filter(t => t.submission_id === s.id)
+    }));
+
+    renderTable();
+    updateStats();
+  } catch(e) {
+    console.error(e);
+    showToast('Error loading entries');
+  }
+}
+
+function updateStats() {
+  const total = allEntries.length;
+  const teams = allEntries.reduce((sum, s) => sum + s.teams.length, 0);
+  const pot = teams * 20;
+  const paid = allEntries.filter(e => e.payment_status !== 'unpaid' && e.payment_status !== null).length;
+  const unpaid = total - paid;
+  const paidTeams = allEntries.filter(e => e.payment_status !== 'unpaid' && e.payment_status !== null).reduce((sum, s) => sum + s.teams.length, 0);
+  const outstanding = (teams - paidTeams) * 20;
+
+  document.getElementById('statTotalEntries').textContent = teams;
+  document.getElementById('statTotalPot').textContent = '$' + pot.toLocaleString();
+  document.getElementById('statPaid').textContent = paid;
+  document.getElementById('statUnpaid').textContent = unpaid;
+  document.getElementById('statOutstanding').textContent = '$' + outstanding.toLocaleString();
+}
+
+function renderTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const filter = document.getElementById('paymentFilter').value;
+
+  let filtered = allEntries.filter(e => {
+    const name = (e.first_name + ' ' + e.last_name).toLowerCase();
+    const email = (e.email || '').toLowerCase();
+    const matchSearch = !search || name.includes(search) || email.includes(search);
+    const matchFilter = filter === 'all' || (e.payment_status || 'unpaid') === filter;
+    return matchSearch && matchFilter;
+  });
+
+  const tbody = document.getElementById('entriesBody');
+  const table = document.getElementById('entriesTable');
+  const empty = document.getElementById('emptyState');
+
+  if (filtered.length === 0) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+
+  table.style.display = 'table';
+  empty.style.display = 'none';
+
+  let rowNum = 0;
+  tbody.innerHTML = filtered.map(sub => {
+    return sub.teams.map((t, ti) => {
+      rowNum++;
+      const golfers = [t.golfer_1, t.golfer_2, t.golfer_3, t.golfer_4].join(', ');
+      const payStatus = sub.payment_status || 'unpaid';
+      const payBadge = payStatus === 'unpaid' ? 'badge-unpaid' :
+                       payStatus === 'venmo' ? 'badge-venmo' :
+                       payStatus === 'zelle' ? 'badge-zelle' : 'badge-cash';
+      const payLabel = payStatus.charAt(0).toUpperCase() + payStatus.slice(1);
+      const date = new Date(sub.created_at).toLocaleDateString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+
+      const isFirstTeam = ti === 0;
+      const rowspan = sub.teams.length;
+
+      if (isFirstTeam) {
+        return `<tr data-sub-id="${sub.id}" data-team-id="${t.id}">
+          <td rowspan="${rowspan}" style="border-right:1px solid var(--cream-dark);">${rowNum}</td>
+          <td rowspan="${rowspan}" class="td-name" style="border-right:1px solid var(--cream-dark);">${sub.first_name} ${sub.last_name}</td>
+          <td rowspan="${rowspan}" class="td-email" style="border-right:1px solid var(--cream-dark);">${sub.email || ''}</td>
+          <td><strong>Team ${t.team_number}</strong></td>
+          <td class="td-golfers">${golfers}</td>
+          <td class="td-tb">${t.tiebreaker}</td>
+          <td rowspan="${rowspan}" style="border-left:1px solid var(--cream-dark);">
+            <button class="payment-badge ${payBadge}" onclick="cyclePayment('${sub.id}', '${payStatus}')">${payLabel}</button>
+          </td>
+          <td rowspan="${rowspan}" style="border-left:1px solid var(--cream-dark);" class="td-email">${date}</td>
+          <td rowspan="${rowspan}" style="border-left:1px solid var(--cream-dark);">
+            <div class="action-btns">
+              <button class="btn-sm btn-edit" onclick="editEntry('${sub.id}')">Edit</button>
+              <button class="btn-sm btn-delete" onclick="deleteEntry('${sub.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>`;
+      } else {
+        return `<tr data-sub-id="${sub.id}" data-team-id="${t.id}">
+          <td><strong>Team ${t.team_number}</strong></td>
+          <td class="td-golfers">${golfers}</td>
+          <td class="td-tb">${t.tiebreaker}</td>
+        </tr>`;
+      }
+    }).join('');
+  }).join('');
+}
+
+// Payment cycling
+const paymentCycle = ['unpaid', 'venmo', 'zelle', 'cash'];
+
+async function cyclePayment(subId, current) {
+  const idx = paymentCycle.indexOf(current);
+  const next = paymentCycle[(idx + 1) % paymentCycle.length];
+  await supabaseReq(`submissions?id=eq.${subId}`, 'PATCH', { payment_status: next });
+  const entry = allEntries.find(e => e.id === subId);
+  if (entry) entry.payment_status = next;
+  renderTable();
+  updateStats();
+  showToast(`Payment updated to ${next}`);
+}
+
+// Add Entry
+document.getElementById('addEntryBtn').addEventListener('click', () => {
+  editingTeamId = null;
+  editingSubmissionId = null;
+  document.getElementById('modalTitle').textContent = 'Add Entry';
+  document.getElementById('mFirstName').value = '';
+  document.getElementById('mLastName').value = '';
+  document.getElementById('mEmail').value = '';
+  document.getElementById('mPayment').value = 'unpaid';
+  buildTeamsSection(1);
+  document.getElementById('entryModal').classList.add('show');
+});
+
+function buildTeamsSection(count, teams = []) {
+  const sec = document.getElementById('teamsSection');
+  let html = '';
+  for (let i = 0; i < count; i++) {
+    const t = teams[i] || {};
+    html += `<div style="border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;background:var(--white);">
+      <div style="font-weight:600;color:var(--green);margin-bottom:12px;font-size:13px;">Team ${i+1}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        ${[1,2,3,4].map(n => `
+          <div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Golfer ${n}</div>
+            <select class="modal-select team-golfer" data-team="${i}" data-golfer="${n}" style="font-size:12px;padding:8px;">
+              <option value="">— Select —</option>
+              ${GOLFERS.map(g => `<option value="${g}"${g === t['golfer_'+n] ? ' selected' : ''}>${g}</option>`).join('')}
+            </select>
+          </div>
+        `).join('')}
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="flex:0 0 120px;">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Tiebreaker</div>
+          <input type="number" class="modal-input team-tb" data-team="${i}" value="${t.tiebreaker || ''}" placeholder="-14" style="padding:8px;font-size:13px;">
+        </div>
+        ${count > 1 && i === count-1 ? `<button type="button" onclick="removeLastTeam()" style="margin-top:14px;font-size:12px;color:var(--error);background:none;border:none;cursor:pointer;font-weight:600;">Remove Team</button>` : ''}
+      </div>
+    </div>`;
+  }
+  if (count < 5) {
+    html += `<button type="button" onclick="addTeamToModal()" style="width:100%;padding:10px;background:none;border:2px dashed var(--border);border-radius:8px;color:var(--green-mid);font-weight:600;cursor:pointer;font-size:13px;margin-bottom:12px;">+ Add Another Team</button>`;
+  }
+  sec.innerHTML = html;
+}
+
+let modalTeamCount = 1;
+let modalTeamData = [];
+
+function addTeamToModal() {
+  modalTeamCount++;
+  buildTeamsSection(modalTeamCount, getModalTeamData());
+}
+
+function removeLastTeam() {
+  if (modalTeamCount > 1) {
+    modalTeamCount--;
+    buildTeamsSection(modalTeamCount, getModalTeamData());
+  }
+}
+
+function getModalTeamData() {
+  const data = [];
+  const count = document.querySelectorAll('#teamsSection .team-tb').length;
+  for (let i = 0; i < count; i++) {
+    const golfers = {};
+    [1,2,3,4].forEach(n => {
+      const sel = document.querySelector(`.team-golfer[data-team="${i}"][data-golfer="${n}"]`);
+      if (sel) golfers['golfer_'+n] = sel.value;
+    });
+    const tb = document.querySelector(`.team-tb[data-team="${i}"]`);
+    golfers.tiebreaker = tb ? tb.value : '';
+    data.push(golfers);
+  }
+  return data;
+}
+
+// Edit Entry
+function editEntry(subId) {
+  const entry = allEntries.find(e => e.id === subId);
+  if (!entry) return;
+  editingSubmissionId = subId;
+  modalTeamCount = entry.teams.length;
+  document.getElementById('modalTitle').textContent = 'Edit Entry';
+  document.getElementById('mFirstName').value = entry.first_name;
+  document.getElementById('mLastName').value = entry.last_name;
+  document.getElementById('mEmail').value = entry.email || '';
+  document.getElementById('mPayment').value = entry.payment_status || 'unpaid';
+  buildTeamsSection(entry.teams.length, entry.teams);
+  document.getElementById('entryModal').classList.add('show');
+}
+
+// Save Entry
+document.getElementById('modalSaveBtn').addEventListener('click', async () => {
+  const firstName = document.getElementById('mFirstName').value.trim();
+  const lastName = document.getElementById('mLastName').value.trim();
+  const email = document.getElementById('mEmail').value.trim();
+  const payment = document.getElementById('mPayment').value;
+
+  if (!firstName || !lastName) { showToast('Please enter a name'); return; }
+
+  const teamData = getModalTeamData();
+  for (let i = 0; i < teamData.length; i++) {
+    const t = teamData[i];
+    if (!t.golfer_1 || !t.golfer_2 || !t.golfer_3 || !t.golfer_4) {
+      showToast(`Please select all 4 golfers for Team ${i+1}`); return;
+    }
+    if (!t.tiebreaker) { showToast(`Please enter tiebreaker for Team ${i+1}`); return; }
+  }
+
+  try {
+    if (editingSubmissionId) {
+      // Update existing
+      await supabaseReq(`submissions?id=eq.${editingSubmissionId}`, 'PATCH', {
+        first_name: firstName, last_name: lastName, email, payment_status: payment, total_teams: teamData.length
+      });
+      // Delete old teams and re-insert
+      await supabaseReq(`teams?submission_id=eq.${editingSubmissionId}`, 'DELETE');
+      for (let i = 0; i < teamData.length; i++) {
+        const t = teamData[i];
+        await supabaseReq('teams', 'POST', {
+          submission_id: editingSubmissionId,
+          team_number: i + 1,
+          golfer_1: t.golfer_1, golfer_2: t.golfer_2, golfer_3: t.golfer_3, golfer_4: t.golfer_4,
+          tiebreaker: parseInt(t.tiebreaker)
+        });
+      }
+      showToast('Entry updated!');
+    } else {
+      // New entry
+      const [sub] = await supabaseReq('submissions', 'POST', {
+        first_name: firstName, last_name: lastName, email, payment_status: payment, total_teams: teamData.length
+      });
+      for (let i = 0; i < teamData.length; i++) {
+        const t = teamData[i];
+        await supabaseReq('teams', 'POST', {
+          submission_id: sub.id,
+          team_number: i + 1,
+          golfer_1: t.golfer_1, golfer_2: t.golfer_2, golfer_3: t.golfer_3, golfer_4: t.golfer_4,
+          tiebreaker: parseInt(t.tiebreaker)
+        });
+      }
+      // Send confirmation email for manually added entries
+      if (email) {
+        try {
+          await fetch('https://pxkulaarrlytzavaeqej.supabase.co/functions/v1/send-confirmation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+            body: JSON.stringify({
+              firstName,
+              lastName,
+              email,
+              teams: teamData.map((t, i) => ({
+                teamNum: i + 1,
+                golfers: [t.golfer_1, t.golfer_2, t.golfer_3, t.golfer_4],
+                tiebreaker: t.tiebreaker
+              }))
+            })
+          });
+        } catch(e) { console.error('Email error:', e); }
+      }
+      showToast('Entry added — confirmation email sent!');
+    }
+
+    closeModal();
+    await loadEntries();
+  } catch(e) {
+    console.error(e);
+    showToast('Error saving entry');
+  }
+});
+
+// Delete Entry
+function deleteEntry(subId) {
+  const entry = allEntries.find(e => e.id === subId);
+  showConfirm(
+    '🗑️',
+    'Delete Entry?',
+    `Delete all teams for ${entry.first_name} ${entry.last_name}? This cannot be undone.`,
+    async () => {
+      await supabaseReq(`submissions?id=eq.${subId}`, 'DELETE');
+      await loadEntries();
+      showToast('Entry deleted');
+    }
+  );
+}
+
+// Clear All
+document.getElementById('clearAllBtn').addEventListener('click', () => {
+  showConfirm(
+    '⚠️',
+    'Clear ALL Entries?',
+    'This will permanently delete every submission and team from the database. This cannot be undone.',
+    async () => {
+      await supabaseReq('teams?id=neq.00000000-0000-0000-0000-000000000000', 'DELETE');
+      await supabaseReq('submissions?id=neq.00000000-0000-0000-0000-000000000000', 'DELETE');
+      await loadEntries();
+      showToast('All entries cleared');
+    }
+  );
+});
+
+// Modal
+document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
+document.getElementById('entryModal').addEventListener('click', e => { if (e.target === document.getElementById('entryModal')) closeModal(); });
+
+function closeModal() {
+  document.getElementById('entryModal').classList.remove('show');
+  editingSubmissionId = null;
+  modalTeamCount = 1;
+}
+
+// Confirm
+function showConfirm(icon, title, msg, cb) {
+  document.getElementById('confirmIcon').textContent = icon;
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent = msg;
+  confirmCallback = cb;
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+
+document.getElementById('confirmOkBtn').addEventListener('click', () => {
+  document.getElementById('confirmOverlay').classList.remove('show');
+  if (confirmCallback) confirmCallback();
+  confirmCallback = null;
+});
+
+document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+  document.getElementById('confirmOverlay').classList.remove('show');
+  confirmCallback = null;
+});
+
+// Search/Filter
+document.getElementById('searchInput').addEventListener('input', renderTable);
+document.getElementById('paymentFilter').addEventListener('change', renderTable);
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
