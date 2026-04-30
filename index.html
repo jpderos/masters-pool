@@ -830,31 +830,23 @@
 
 <script>
 const GOLFERS = [
-  "Ludvig Åberg", "Akshay Bhatia", "Daniel Berger", "Keegan Bradley",
-  "Jacob Bridgeman", "Michael Brennan", "Sam Burns", "Brian Campbell",
-  "Patrick Cantlay", "Angel Cabrera", "Wyndham Clark", "Corey Conners",
-  "Fred Couples", "Jason Day", "Bryson DeChambeau", "Nicolas Echavarria",
-  "Harris English", "Ethan Fang (a)", "Matt Fitzpatrick", "Tommy Fleetwood",
-  "Ryan Fox", "Sergio Garcia", "Ryan Gerard", "Chris Gotterup",
-  "Max Greyserman", "Ben Griffin", "Harry Hall", "Brian Harman",
-  "Tyrrell Hatton", "Russell Henley", "Max Homa", "Brandon Holtz (a)",
-  "Mason Howell (a)", "Jackson Herrington (a)", "Viktor Hovland",
-  "Rasmus Højgaard", "Nicolai Højgaard", "Sungjae Im", "Dustin Johnson",
-  "Zach Johnson", "Casey Jarvis", "Naoyuki Kataoka", "John Keefer",
-  "Michael Kim", "Si Woo Kim", "Kurt Kitayama", "Jake Knapp",
-  "Brooks Koepka", "Haotong Li", "Fifa Laopakdee (a)", "Min Woo Lee",
-  "Shane Lowry", "Robert MacIntyre", "Hideki Matsuyama", "Matt McCarty",
-  "Rory McIlroy", "Tom McKibbin", "Maverick McNealy", "Collin Morikawa",
-  "Rasmus Neergaard-Petersen", "Alex Noren", "Andrew Novak",
-  "Jose Maria Olazabal", "Carlos Ortiz", "Marco Penge", "Aldrich Potgieter",
-  "Mateo Pulcini (a)", "Aaron Rai", "Jon Rahm", "Patrick Reed",
-  "Kristoffer Reitan", "Davis Riley", "Justin Rose", "Xander Schauffele",
-  "Scottie Scheffler", "Adam Scott", "Charl Schwartzel", "Vijay Singh",
-  "Cameron Smith", "J.J. Spaun", "Jordan Spieth", "Samuel Stevens",
-  "Sepp Straka", "Nick Taylor", "Justin Thomas", "Sami Valimaki",
-  "Bubba Watson", "Mike Weir", "Danny Willett", "Gary Woodland",
-  "Cameron Young"
-].sort();
+  "Adam Scott", "Akshay Bhatia", "Alex Fitzpatrick", "Alex Smalley",
+  "Andrew Novak", "Ben Griffin", "Brian Campbell", "Brian Harman",
+  "Bud Cauley", "Cameron Young", "Chandler Blanchet", "Chris Gotterup",
+  "Corey Conners", "Daniel Berger", "Denny McCarthy", "David Lipsky",
+  "Gary Woodland", "Harry Hall", "Harris English", "Hideki Matsuyama",
+  "Jacob Bridgeman", "Jason Day", "J.J. Spaun", "Joel Dahmen",
+  "Jhonattan Vegas", "J.T. Poston", "Justin Rose", "Justin Thomas",
+  "Jake Knapp", "Keegan Bradley", "Kurt Kitayama", "Lucas Glover",
+  "Matt Wallace", "Maverick McNealy", "Max Greyserman", "Michael Kim",
+  "Michael Thorbjornsen", "Min Woo Lee", "Nick Taylor", "Nico Echavarria",
+  "Nicolai Højgaard", "Patrick Rodgers", "Rickie Fowler", "Ricky Castillo",
+  "Russell Henley", "Ryan Fox", "Ryan Gerard", "Ryo Hisatsune",
+  "Sahith Theegala", "Sam Burns", "Sam Stevens", "Scottie Scheffler",
+  "Sepp Straka", "Shane Lowry", "Si Woo Kim", "Sudarshan Yellamaraju",
+  "Sungjae Im", "Taylor Pendrith", "Tom Hoge", "Tommy Fleetwood",
+  "Viktor Hovland", "Collin Morikawa", "J.T. Poston"
+].filter((v, i, a) => a.indexOf(v) === i).sort();
 
 const MAX_TEAMS = 5;
 let teamCount = 0;
