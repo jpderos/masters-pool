@@ -494,6 +494,78 @@
     .golfer-breakdown { display: none; }
     .tb-col { display: none; }
   }
+
+  /* Live ticker */
+  .ticker-wrap {
+    background: rgba(0,0,0,0.35);
+    border-top: 1px solid rgba(201,168,76,0.2);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .ticker-label {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    vertical-align: middle;
+    position: relative;
+    z-index: 2;
+  }
+
+  .ticker-content {
+    display: inline-block;
+    animation: ticker-scroll 60s linear infinite;
+    padding: 8px 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  .ticker-content:hover { animation-play-state: paused; }
+
+  @keyframes ticker-scroll {
+    0%   { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .ticker-item {
+    display: inline-block;
+    margin-right: 40px;
+  }
+
+  .ticker-pos {
+    color: rgba(255,255,255,0.45);
+    font-size: 11px;
+    margin-right: 4px;
+  }
+
+  .ticker-name { font-weight: 600; }
+
+  .ticker-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    margin-left: 5px;
+  }
+
+  .ticker-score.under { color: #ff6b6b; }
+  .ticker-score.over  { color: #74b9ff; }
+  .ticker-score.even  { color: rgba(255,255,255,0.5); }
+
+  .ticker-dot {
+    color: var(--gold);
+    margin: 0 16px;
+    opacity: 0.4;
+  }
 </style>
 </head>
 <body>
@@ -508,6 +580,11 @@
 <div class="nav">
   <a href="/">Entry Form</a>
   <a href="/leaderboard.html" class="active">Leaderboard</a>
+</div>
+
+<div class="ticker-wrap" id="tickerWrap" style="display:none;">
+  <span class="ticker-label">🏆 Live</span>
+  <span class="ticker-content" id="tickerContent"></span>
 </div>
 
 <div class="container">
@@ -659,6 +736,7 @@ async function fetchScores() {
       };
     });
 
+    renderTicker(competitors);
     return hasScores;
   } catch(e) {
     console.error('ESPN fetch error:', e);
@@ -824,6 +902,42 @@ function setFilter(f) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('filter' + f.charAt(0).toUpperCase() + f.slice(1)).classList.add('active');
   renderLeaderboard();
+}
+
+
+function renderTicker(competitors) {
+  if (!competitors || competitors.length === 0) return;
+
+  const tickerWrap = document.getElementById('tickerWrap');
+  const tickerContent = document.getElementById('tickerContent');
+
+  // Show top 20 players
+  const top = competitors.slice(0, 20);
+
+  const html = top.map((c, i) => {
+    const name = c.athlete?.fullName || '';
+    const scoreStr = c.score || 'E';
+    const isCut = c.status?.type?.name === 'STATUS_CUT';
+    if (isCut) return '';
+
+    const numScore = parseInt(scoreStr) || 0;
+    const displayScore = scoreStr === 'E' ? 'E' : (numScore > 0 ? '+' + numScore : String(numScore));
+    const scoreClass = numScore < 0 ? 'under' : numScore > 0 ? 'over' : 'even';
+
+    return '<span class="ticker-item">' +
+      '<span class="ticker-pos">' + (i + 1) + '.</span>' +
+      '<span class="ticker-name">' + name + '</span>' +
+      '<span class="ticker-score ' + scoreClass + '">' + displayScore + '</span>' +
+      '</span>' +
+      '<span class="ticker-dot">·</span>';
+  }).filter(Boolean).join('');
+
+  tickerContent.innerHTML = html + html; // duplicate for seamless loop
+  tickerWrap.style.display = 'block';
+
+  // Adjust animation speed based on content length
+  const duration = Math.max(40, top.length * 3);
+  tickerContent.style.animationDuration = duration + 's';
 }
 
 async function init() {
