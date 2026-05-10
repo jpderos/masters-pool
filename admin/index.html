@@ -611,6 +611,14 @@
 
   <!-- Stats Bar -->
   <div class="stats-bar">
+    <div class="stat-item" style="margin-left:auto;">
+      <button id="lockToggleBtn" class="btn" onclick="toggleLock()" style="font-size:13px;padding:10px 20px;">
+        Loading...
+      </button>
+      <div class="stat-label" style="margin-top:6px;" id="lockStatus">Checking...</div>
+    </div>
+  </div>
+  <div class="stats-bar">
     <div class="stat-item">
       <div class="stat-value" id="statTotalEntries">0</div>
       <div class="stat-label">Total Entries</div>
@@ -758,6 +766,71 @@ let editingTeamId = null;
 let editingSubmissionId = null;
 let confirmCallback = null;
 
+
+// ── Submissions Lock Toggle ──────────────────────────────
+let submissionsLocked = false;
+
+async function loadLockStatus() {
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/settings?key=eq.submissions_locked&select=value', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    });
+    const data = await res.json();
+    submissionsLocked = data && data.length > 0 && data[0].value === 'true';
+  } catch(e) { submissionsLocked = false; }
+  updateLockBtn();
+}
+
+function updateLockBtn() {
+  const btn = document.getElementById('lockToggleBtn');
+  const status = document.getElementById('lockStatus');
+  if (submissionsLocked) {
+    btn.textContent = '🔓 Unlock Submissions';
+    btn.className = 'btn btn-gold';
+    status.textContent = 'Submissions: LOCKED';
+    status.style.color = 'var(--error)';
+  } else {
+    btn.textContent = '🔒 Lock Submissions';
+    btn.className = 'btn btn-danger';
+    status.textContent = 'Submissions: OPEN';
+    status.style.color = 'var(--success)';
+  }
+}
+
+async function toggleLock() {
+  const newVal = !submissionsLocked;
+  const msg = newVal
+    ? 'Lock submissions? No new entries will be accepted until unlocked.'
+    : 'Unlock submissions? New entries will be accepted again.';
+
+  showConfirm(
+    newVal ? '🔒' : '🔓',
+    newVal ? 'Lock Submissions?' : 'Unlock Submissions?',
+    msg,
+    async () => {
+      try {
+        // Upsert the setting
+        await fetch(SUPABASE_URL + '/rest/v1/settings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Prefer': 'resolution=merge-duplicates'
+          },
+          body: JSON.stringify({ key: 'submissions_locked', value: String(newVal) })
+        });
+        submissionsLocked = newVal;
+        updateLockBtn();
+        showToast(newVal ? 'Submissions locked!' : 'Submissions unlocked!');
+      } catch(e) {
+        showToast('Error updating lock status');
+      }
+    }
+  );
+}
+// ────────────────────────────────────────────────────────
+
 // Auth
 document.getElementById('loginBtn').addEventListener('click', login);
 document.getElementById('passwordInput').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
@@ -777,6 +850,7 @@ function showAdmin() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminScreen').style.display = 'block';
   loadEntries();
+  loadLockStatus();
 }
 
 // Auto-login if session active
