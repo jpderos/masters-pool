@@ -664,6 +664,24 @@
     font-style: italic;
     background: var(--cream-dark);
   }
+
+  /* Submissions locked */
+  .locked-banner {
+    background: rgba(184,64,64,0.15);
+    border: 1px solid rgba(184,64,64,0.4);
+    border-radius: 16px;
+    padding: 48px 32px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .locked-banner .lock-icon { font-size: 48px; margin-bottom: 16px; }
+  .locked-banner h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .locked-banner p { color: rgba(255,255,255,0.65); font-size: 15px; line-height: 1.6; }
 </style>
 </head>
 <body>
@@ -829,6 +847,48 @@
 </div>
 
 <script>
+
+// ── Entry Lock ──────────────────────────────────────────
+// Hardcoded deadline: May 13 2026, 11:59 PM CST (UTC-6)
+const LOCK_DEADLINE = new Date('2026-05-14T05:59:00Z'); // 11:59 PM CST = 05:59 UTC next day
+
+async function checkLockStatus() {
+  // 1. Check admin toggle in Supabase first
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/settings?key=eq.submissions_locked&select=value', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    });
+    const data = await res.json();
+    if (data && data.length > 0 && data[0].value === 'true') {
+      showLockedBanner();
+      return true;
+    }
+  } catch(e) { /* fall through to deadline check */ }
+
+  // 2. Check hardcoded deadline
+  if (new Date() > LOCK_DEADLINE) {
+    showLockedBanner();
+    return true;
+  }
+  return false;
+}
+
+function showLockedBanner() {
+  // Hide the form cards and show locked banner
+  document.querySelectorAll('.card, .submit-card, .payout-card').forEach(el => el.style.display = 'none');
+  const banner = document.createElement('div');
+  banner.className = 'locked-banner';
+  banner.innerHTML = '<div class="lock-icon">🔒</div>' +
+    '<h2>Submissions Are Closed</h2>' +
+    '<p>The entry window for this tournament has closed. Check the leaderboard to follow the action!</p>' +
+    '<div style="margin-top:24px;"><a href="/leaderboard" style="display:inline-block;background:var(--gold);color:var(--green);font-family:'Playfair Display',serif;font-size:15px;font-weight:600;padding:12px 28px;border-radius:8px;text-decoration:none;">🏌️ View Leaderboard</a></div>';
+  document.querySelector('.container').prepend(banner);
+}
+
+// Run lock check on load
+checkLockStatus();
+// ────────────────────────────────────────────────────────
+
 const GOLFERS = [
   "Adam Scott", "Akshay Bhatia", "Alex Fitzpatrick", "Alex Smalley",
   "Andrew Novak", "Ben Griffin", "Brian Campbell", "Brian Harman",
