@@ -1042,7 +1042,7 @@ function validateForm() {
       errors.push(`Team ${tNum}: Please select all 4 golfers.`);
     }
 
-    const tbInput = b.querySelector('input[type="text"]');
+    const tbInput = document.getElementById(`team${tNum}_tb`);
     const tbVal = tbInput.value.trim();
     if (!tbVal || !/^-?[0-9]+$/.test(tbVal)) {
       tbInput.classList.add('invalid'); valid = false;
@@ -1074,7 +1074,7 @@ function getFormData() {
     const tNum = i + 1;
     const selects = b.querySelectorAll('select');
     const golfers = Array.from(selects).map(s => s.value);
-    const tb = b.querySelector('input[type="text"]').value;
+    const tb = document.getElementById(`team${tNum}_tb`).value;
     teams.push({ teamNum: tNum, golfers, tiebreaker: tb });
   });
 
