@@ -885,8 +885,6 @@ function showLockedBanner() {
   document.querySelector('.container').prepend(banner);
 }
 
-// Run lock check on load
-checkLockStatus();
 // ────────────────────────────────────────────────────────
 
 const GOLFERS = [
@@ -1248,6 +1246,7 @@ window.removeTeam = function(idx) {
 // Start up
 addTeam();
 fetchLiveEntryCount();
+checkLockStatus();
 </script>
 </body>
 </html>
