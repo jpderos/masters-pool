@@ -566,6 +566,93 @@
     margin: 0 16px;
     opacity: 0.4;
   }
+
+  /* Golfer popularity */
+  .popularity-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .popularity-header {
+    background: rgba(201,168,76,0.15);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .popularity-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--gold-light);
+  }
+
+  .popularity-header span {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    font-style: italic;
+  }
+
+  .popularity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0;
+  }
+
+  .popularity-item {
+    padding: 11px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .popularity-rank {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    width: 20px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .popularity-name {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    flex: 1;
+    font-weight: 500;
+  }
+
+  .popularity-bar-wrap {
+    width: 80px;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .popularity-bar {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .popularity-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--gold-light);
+    font-weight: 600;
+    width: 36px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
 </style>
 </head>
 <body>
@@ -641,6 +728,16 @@
       </thead>
       <tbody id="leaderboardBody"></tbody>
     </table>
+  </div>
+
+
+  <!-- Golfer Popularity (shown after lock) -->
+  <div class="popularity-card" id="popularityCard" style="display:none;">
+    <div class="popularity-header">
+      <h3>📊 Golfer Ownership</h3>
+      <span>% of teams that selected each golfer</span>
+    </div>
+    <div class="popularity-grid" id="popularityGrid"></div>
   </div>
 
   <!-- Payout card -->
@@ -947,6 +1044,44 @@ function renderTicker(competitors) {
   tickerContent.style.animationDuration = duration + 's';
 }
 
+
+function renderPopularity(teams) {
+  if (teams.length === 0) return;
+
+  const totalTeams = teams.length;
+  const counts = {};
+
+  teams.forEach(team => {
+    team.golfers.forEach(name => {
+      if (!name) return;
+      counts[name] = (counts[name] || 0) + 1;
+    });
+  });
+
+  // Sort by count desc, filter out zero
+  const sorted = Object.entries(counts)
+    .filter(([, c]) => c > 0)
+    .sort((a, b) => b[1] - a[1]);
+
+  if (sorted.length === 0) return;
+
+  const maxCount = sorted[0][1];
+
+  const html = sorted.map(([name, count], i) => {
+    const pct = Math.round((count / totalTeams) * 100);
+    const barWidth = Math.round((count / maxCount) * 100);
+    return '<div class="popularity-item">' +
+      '<span class="popularity-rank">' + (i + 1) + '</span>' +
+      '<span class="popularity-name">' + name + '</span>' +
+      '<div class="popularity-bar-wrap"><div class="popularity-bar" style="width:' + barWidth + '%"></div></div>' +
+      '<span class="popularity-pct">' + pct + '%</span>' +
+      '</div>';
+  }).join('');
+
+  document.getElementById('popularityGrid').innerHTML = html;
+  document.getElementById('popularityCard').style.display = 'block';
+}
+
 async function checkSubmissionsLocked() {
   try {
     const res = await fetch(SUPABASE_URL + '/rest/v1/settings?key=eq.submissions_locked&select=value', {
@@ -974,6 +1109,7 @@ async function init() {
   }
 
   await loadData();
+  renderPopularity(allTeams);
   const hasScores = await fetchScores();
   tournamentActive = hasScores;
 
