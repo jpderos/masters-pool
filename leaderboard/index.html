@@ -607,6 +607,13 @@
     <button class="filter-btn" id="filterCut" onclick="setFilter('cut')">Eliminated</button>
   </div>
 
+  <!-- Picks hidden banner (shown when submissions still open) -->
+  <div class="not-started-banner" id="picksHiddenBanner" style="display:none;">
+    <div class="icon">🔒</div>
+    <h2>Picks Are Hidden Until Entries Close</h2>
+    <p>To keep things fair, team picks are hidden until the submission window closes. Check back once entries are locked!</p>
+  </div>
+
   <!-- Not started banner (shown when no tournament is active) -->
   <div class="not-started-banner" id="notStartedBanner" style="display:none;">
     <div class="icon">🏌️</div>
@@ -940,7 +947,32 @@ function renderTicker(competitors) {
   tickerContent.style.animationDuration = duration + 's';
 }
 
+async function checkSubmissionsLocked() {
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/settings?key=eq.submissions_locked&select=value', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    });
+    const data = await res.json();
+    if (data && data.length > 0 && data[0].value === 'true') return true;
+  } catch(e) {}
+  // Also check hardcoded deadline: May 13 2026, 11:59 PM CST
+  return new Date() > new Date('2026-05-14T05:59:00Z');
+}
+
 async function init() {
+  // Check if submissions are still open — if so, hide picks
+  const locked = await checkSubmissionsLocked();
+  if (!locked) {
+    document.getElementById('picksHiddenBanner').style.display = 'block';
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('leaderboardCard').style.display = 'none';
+    document.getElementById('statusDot').classList.add('inactive');
+    document.getElementById('statusText').textContent = 'Submissions still open';
+    // Still show payout calculator
+    await loadData();
+    return;
+  }
+
   await loadData();
   const hasScores = await fetchScores();
   tournamentActive = hasScores;
