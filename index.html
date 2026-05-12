@@ -966,9 +966,9 @@ function addTeam() {
     <div class="tiebreaker-row">
       <div class="form-group">
         <label for="team${idx}_tb">Tiebreaker Score</label>
-        <input type="text" id="team${idx}_tb" placeholder="-14" inputmode="numeric" pattern="-?[0-9]+">
+        <input type="text" id="team${idx}_tb" placeholder="-14" inputmode="decimal" pattern="-?[0-9]+" autocomplete="off">
       </div>
-      <div class="tiebreaker-hint">Your predicted winning score (e.g. -14, -12). This golfer does NOT have to be in your foursome.</div>
+      <div class="tiebreaker-hint">Your predicted winning score (e.g. -14, -12). Use a minus sign for under par. This golfer does NOT have to be in your foursome.</div>
     </div>
   `;
 
