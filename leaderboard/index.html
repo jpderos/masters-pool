@@ -797,6 +797,11 @@ async function supabaseGet(endpoint) {
   return res.json();
 }
 
+
+function normalizeName(name) {
+  return name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+}
+
 async function fetchScores() {
   try {
     const res = await fetch(ESPN_SCOREBOARD);
@@ -820,7 +825,7 @@ async function fetchScores() {
       const name = c.athlete?.fullName || '';
       const scoreStr = c.score || 'E';
       const status = c.status?.type?.name || '';
-      const isCut = status === 'STATUS_CUT' || c.status?.type?.shortDetail === 'CUT';
+      const isCut = status === 'STATUS_CUT' || status === 'STATUS_WITHDRAWN' || c.status?.type?.shortDetail === 'CUT' || c.status?.type?.shortDetail === 'WD' || c.status?.type?.shortDetail === 'W/D';
 
       // Parse numeric score
       let numericScore = 0;
@@ -832,7 +837,7 @@ async function fetchScores() {
 
       if (scoreStr !== '--' && scoreStr !== '') hasScores = true;
 
-      golferScores[name] = {
+      golferScores[normalizeName(name)] = {
         score: numericScore,
         displayScore: scoreStr === 'E' ? 'E' : (numericScore > 0 ? '+' + numericScore : String(numericScore)),
         isCut,
@@ -900,7 +905,7 @@ function calculateTeamScore(golfers) {
   let allScored = true;
 
   golfers.forEach(name => {
-    const g = golferScores[name];
+    const g = golferScores[normalizeName(name)];
     if (!g) { allScored = false; return; }
     if (g.isCut) { eliminated = true; return; }
     total += g.score;
@@ -977,7 +982,7 @@ function renderLeaderboard() {
 
     // Golfer breakdown chips
     const chips = team.golfers.map(name => {
-      const g = golferScores[name] || null;
+      const g = golferScores[normalizeName(name)] || null;
       const shortName = name.split(' ').slice(-1)[0]; // last name only on mobile
       if (!g) return `<span class="golfer-chip">${name}</span>`;
       if (g.isCut) return `<span class="golfer-chip cut-chip">${name} <span class="chip-score">CUT</span></span>`;
