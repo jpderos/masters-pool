@@ -799,7 +799,12 @@ async function supabaseGet(endpoint) {
 
 
 function normalizeName(name) {
-  return name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  return name
+    .replace(/ø/g, 'o').replace(/Ø/g, 'o')
+    .replace(/æ/g, 'ae').replace(/Æ/g, 'ae')
+    .replace(/ß/g, 'ss')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase().trim();
 }
 
 async function fetchScores() {
