@@ -906,7 +906,7 @@ function calculateTeamScore(golfers) {
 
   golfers.forEach(name => {
     const g = golferScores[normalizeName(name)];
-    if (!g) { allScored = false; return; }
+    if (!g) { eliminated = true; return; }
     if (g.isCut) { eliminated = true; return; }
     total += g.score;
   });
@@ -984,7 +984,7 @@ function renderLeaderboard() {
     const chips = team.golfers.map(name => {
       const g = golferScores[normalizeName(name)] || null;
       const shortName = name.split(' ').slice(-1)[0]; // last name only on mobile
-      if (!g) return `<span class="golfer-chip">${name}</span>`;
+      if (!g) return `<span class="golfer-chip cut-chip">${name} <span class="chip-score">WD</span></span>`;
       if (g.isCut) return `<span class="golfer-chip cut-chip">${name} <span class="chip-score">CUT</span></span>`;
       const cls = g.score < 0 ? 'under' : g.score > 0 ? 'over' : '';
       return `<span class="golfer-chip">${name} <span class="chip-score ${cls}">${g.displayScore}</span></span>`;
