@@ -611,6 +611,19 @@
 
   <!-- Stats Bar -->
   <div class="stats-bar">
+    <div class="stat-item">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div>
+          <label style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:6px;">Cut Line</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" id="cutLineInput" placeholder="e.g. +4 or -2" style="width:110px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:monospace;font-size:14px;text-align:center;">
+            <button class="btn btn-primary" onclick="saveCutLine()" style="font-size:12px;padding:8px 14px;">Set</button>
+            <button class="btn btn-cancel" onclick="clearCutLine()" style="font-size:12px;padding:8px 14px;">Clear</button>
+          </div>
+          <div class="stat-label" style="margin-top:4px;" id="cutLineStatus">Not set</div>
+        </div>
+      </div>
+    </div>
     <div class="stat-item" style="margin-left:auto;">
       <button id="lockToggleBtn" class="btn" onclick="toggleLock()" style="font-size:13px;padding:10px 20px;">
         Loading...
@@ -767,6 +780,65 @@ let editingSubmissionId = null;
 let confirmCallback = null;
 
 
+
+// ── Cut Line ────────────────────────────────────────────
+async function loadCutLine() {
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/settings?key=eq.cut_line&select=value', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    });
+    const data = await res.json();
+    if (data && data.length > 0 && data[0].value !== 'none') {
+      document.getElementById('cutLineInput').value = data[0].value;
+      document.getElementById('cutLineStatus').textContent = 'Cut set at ' + data[0].value;
+      document.getElementById('cutLineStatus').style.color = 'var(--error)';
+    } else {
+      document.getElementById('cutLineStatus').textContent = 'Not set';
+      document.getElementById('cutLineStatus').style.color = 'var(--text-muted)';
+    }
+  } catch(e) {}
+}
+
+async function saveCutLine() {
+  const val = document.getElementById('cutLineInput').value.trim();
+  if (!val) { showToast('Enter a cut line first'); return; }
+  try {
+    await fetch(SUPABASE_URL + '/rest/v1/settings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ key: 'cut_line', value: val })
+    });
+    document.getElementById('cutLineStatus').textContent = 'Cut set at ' + val;
+    document.getElementById('cutLineStatus').style.color = 'var(--error)';
+    showToast('Cut line set to ' + val);
+  } catch(e) { showToast('Error saving cut line'); }
+}
+
+async function clearCutLine() {
+  try {
+    await fetch(SUPABASE_URL + '/rest/v1/settings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ key: 'cut_line', value: 'none' })
+    });
+    document.getElementById('cutLineInput').value = '';
+    document.getElementById('cutLineStatus').textContent = 'Not set';
+    document.getElementById('cutLineStatus').style.color = 'var(--text-muted)';
+    showToast('Cut line cleared');
+  } catch(e) { showToast('Error clearing cut line'); }
+}
+// ────────────────────────────────────────────────────────
+
 // ── Submissions Lock Toggle ──────────────────────────────
 let submissionsLocked = false;
 
@@ -851,6 +923,7 @@ function showAdmin() {
   document.getElementById('adminScreen').style.display = 'block';
   loadEntries();
   loadLockStatus();
+  loadCutLine();
 }
 
 // Auto-login if session active
